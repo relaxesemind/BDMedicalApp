@@ -7,10 +7,10 @@
 #include <QVector>
 
 enum BDTypes {
-    Int, Varchar, Char1, Reference, IDtype
+    Int, Varchar, Char1, IDtype
 };
 
-class Entity
+class Entity : public QObject
 {
 public:
     virtual QVariantList getData()const;

@@ -18,7 +18,6 @@ QVector<int> RectModel::attr_type_mask()const
          BDTypes::Int,
          BDTypes::Int,
          BDTypes::Int,
-         BDTypes::Int,
-         BDTypes::Reference
+         BDTypes::Int
     };
 }

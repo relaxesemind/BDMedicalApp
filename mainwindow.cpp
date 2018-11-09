@@ -7,12 +7,11 @@
 #include "Managers/databasemanager.h"
 #include "Common/magic.h"
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     setupTableView();
+//    DataBaseManager::shared().select(DBConst::TABLE_NAME_IMAGE);
 }
 
 MainWindow::~MainWindow()
@@ -35,12 +34,33 @@ void MainWindow::addPatientToTableView(const PatientModel &patient)//slot
     APPModel::shared().update();
 }
 
+void MainWindow::updatePatientImages()
+{
+    QVector<DataBaseManager::pEntity> images = DataBaseManager::shared().select(DBConst::TABLE_NAME_IMAGE);
+}
+
 void MainWindow::on_pushButton_8_clicked() //add images to patient
 {
-    QStringList filenames = QFileDialog::getOpenFileNames(this,tr("BMP files"),
-                                                          QDir::currentPath(),tr("Bitmap files (*.bmp);;All files (*.*)") );
-    if (!filenames.empty()) {
+    QModelIndexList selection = ui->tableView->selectionModel()->selectedRows();
 
+    if (selection.empty() || selection.size() > 1) {
+        AppMessage("Ошибка","Неверно выбран пациент");
+        return;
+    }
+
+    QModelIndex row = selection.first();
+    int patientID = row.data().toInt();
+
+    QStringList filenames = QFileDialog::getOpenFileNames(this,Global::CHOOSE_IMAGE_WINDOW_TITLE,
+                                                          QDir::currentPath(),Global::CHOOSE_IMAGE_TYPES);
+
+    while (!filenames.empty()) {
+        ImageModel image;
+        image.path = filenames.last();
+        image.patientID = patientID;
+        image.comment = "comment comment";
+        filenames.removeLast();
+        DataBaseManager::shared().insert(DBConst::TABLE_NAME_IMAGE,image);
     }
 }
 
@@ -52,6 +72,7 @@ void MainWindow::setupTableView()
     ui->tableView->setModel(&APPModel::shared().patientTableModel);
     ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->tableView->setColumnHidden(0,true);
     APPModel::shared().update();
 }
 
@@ -72,9 +93,13 @@ void MainWindow::on_pushButton_9_clicked() // refresh
     APPModel::shared().update();
 }
 
+void MainWindow::on_tabWidget_tabBarClicked(int index) // select tab - images
+{
+    if (index != 1) {
+        return;
+    }
 
-
-
+}
 
 
 

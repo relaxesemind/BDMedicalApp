@@ -22,7 +22,6 @@ QVector<int> CircleModel::attr_type_mask()const
          BDTypes::Varchar,
          BDTypes::Int,
          BDTypes::Int,
-         BDTypes::Int,
-         BDTypes::Reference
+         BDTypes::Int
     };
 }

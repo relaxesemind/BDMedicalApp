@@ -44,14 +44,14 @@ const std::pair<QString, QString> DBConst::ATTRIBUTE(const QString &table_name, 
         switch (index)
         {
             case 0: return IDattr;
-            case 1: return attr(" PATH "," VARCHAR(50) NOT NULL ");
-            case 2: return attr(" value ", " INT ");
-            case 3: return attr(" kernels ", " VARCHAR(30) ");
-            case 4: return attr(" cells ", " VARCHAR(40) ");
-            case 5: return attr(" scattered_cells ", " VARCHAR(20) ");
-            case 6: return attr(" structures ", " VARCHAR(20) ");
-            case 7: return attr(" bare_kernels", " VARCHAR(20) ");
-            case 8: return attr(" comment ", " VARCHAR(50) ");
+            case 1: return attr("PATH"," VARCHAR(50) NOT NULL ");
+            case 2: return attr("value", " INT ");
+            case 3: return attr("kernels", " VARCHAR(30) ");
+            case 4: return attr("cells", " VARCHAR(40) ");
+            case 5: return attr("scattered_cells", " VARCHAR(20) ");
+            case 6: return attr("structures", " VARCHAR(20) ");
+            case 7: return attr("bare_kernels", " VARCHAR(20) ");
+            case 8: return attr("comment", " VARCHAR(50) ");
             case 9: return attr_reference_cascade(DBConst::TABLE_NAME_PATIENT,
                                                   DBConst::TABLE_REFERENCE_ATTR_IMAGE);
             default: return nullattr;
@@ -106,6 +106,7 @@ void DataBaseManager::connectToDataBase()
 void DataBaseManager::init()
 {
     createTable(DBConst::TABLE_NAME_PATIENT);
+    createTable(DBConst::TABLE_NAME_IMAGE);
 }
 
 DataBaseManager::~DataBaseManager()
@@ -179,15 +180,52 @@ void DataBaseManager::optimizeTable(const QString &tableName)
     query.exec(queryStr);
 }
 
-const QVector<Entity> DataBaseManager::select(const QString &table)
+QVector<DataBaseManager::pEntity> DataBaseManager::select(const QString &table, const QString &param)
 {
     QSqlQuery query(db);
-    query.exec(ripper.prepareSelectFromTableQueryStr(table));
-    while(query.next())
-    {
+    QVector<pEntity> result;
 
+    query.prepare(ripper.prepareSelectFromTableQueryStr(table,param));
+    if (!query.exec())
+    {
+        qDebug() << "SELECT ERROR !!!" << query.lastError();
+        return QVector<pEntity>();
+    }
+    if (!query.isSelect())
+    {
+        qDebug() << "query non select !!!";
+        return QVector<pEntity>();
     }
 
+    if (table == DBConst::TABLE_NAME_IMAGE) {
+        while(query.next())
+        {
+           smartPointer(ImageModel,image);
+
+           image->path = query.value(1).toString();
+           image->value = query.value(2).toInt();
+           image->kernels = query.value(3).toString();
+           image->cells = query.value(4).toString();
+           image->scattered_cells = query.value(5).toString();
+           image->structures = query.value(6).toString();
+           image->bare_kernels = query.value(7).toString();
+           image->comment = query.value(8).toString();
+           image->kernels = query.value(9).toString();
+           image->patientID = query.value(10).toInt();
+
+           result.append(image);
+        }
+        return result;
+    }
+
+    while(query.next())
+    {
+       for (int i = 0; i < query.record().count(); ++i) {
+           qDebug() << query.value(i).toString();
+       }
+
+    }
+   return QVector<pEntity>();
 }
 
 bool DataBaseManager::openDataBase()
@@ -242,9 +280,9 @@ QString QueryRipper::prepareCreateDataBaseQueryStr()
     return QString(DBConst::QUERY_CREATE_DATABASE + DBConst::DATABASE_NAME);
 }
 
-QString QueryRipper::prepareSelectFromTableQueryStr(const QString &tableName)
+QString QueryRipper::prepareSelectFromTableQueryStr(const QString &tableName, const QString& param)
 {
-    return " SELECT * FROM "  + tableName + ";";
+    return " SELECT * FROM " + tableName + param + ";";
 }
 
 QString QueryRipper::prepareCreateTableQuerryStr(const QString &tableName)
@@ -278,8 +316,7 @@ QStack<QString> QueryRipper::prepareInsertQuerry(const QString &tableName, const
 
     for (int index = 0; index < DBConst::TABLE_NUMBER_OF_ATTR(tableName); ++index)
     {
-        if (mask_types[index] == BDTypes::Reference or
-            mask_types[index] == BDTypes::IDtype) {
+        if (mask_types[index] == BDTypes::IDtype) {
             continue;
         }
 

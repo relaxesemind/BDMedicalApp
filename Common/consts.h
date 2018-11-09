@@ -3,6 +3,12 @@
 
 #include <QString>
 
+namespace Global
+{
+    const QString CHOOSE_IMAGE_WINDOW_TITLE = "Выберите BMP файл";
+    const QString CHOOSE_IMAGE_TYPES        = "Bitmap files (*.bmp);;All files (*.*)";
+};
+
 namespace DBConst
 {
     const QString DATABASE_HOSTNAME            = "localhost";
@@ -11,7 +17,7 @@ namespace DBConst
     const QString DATABASE_USER_NAME           = "root";
     const QString DATABASE_USER_PASSWORD       = "0000";
     const qint32  DATABASE_HOST_PORT           = 3306;
-    const QString QUERY_CREATE_DATABASE        = "CREATE  DATABASE IF NOT EXISTS ";
+    const QString QUERY_CREATE_DATABASE        = "CREATE DATABASE IF NOT EXISTS ";
     const QString QUERY_CREATE_TABLE           = "CREATE TABLE IF NOT EXISTS ";
     const QString QUERY_INSERT                 = "INSERT INTO ";
     const QString QUERY_SELECT                 = "SELECT ";

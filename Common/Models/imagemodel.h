@@ -20,7 +20,7 @@ public:
     QString structures;
     QString bare_kernels;
     QString comment;
-    PatientModel *patient;
+    int patientID;
 };
 
 #endif // IMAGEMODEL_H

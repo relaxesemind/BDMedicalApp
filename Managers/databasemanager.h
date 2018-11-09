@@ -11,6 +11,7 @@
 #include <QSqlError>
 #include <QSqlDatabase>
 #include <QSqlTableModel>
+#include <QtSql/QSqlRecord>
 #include <QFile>
 #include <QDate>
 #include <QDebug>
@@ -23,7 +24,7 @@ class QueryRipper
 {
 public:
     QString prepareCreateDataBaseQueryStr();
-    QString prepareSelectFromTableQueryStr(const QString& tableName);
+    QString prepareSelectFromTableQueryStr(const QString& tableName, const QString& param = "");
     QString prepareCreateTableQuerryStr(const QString& tableName);
     QString prepareDeleteRowQueryStr(const QString& tableName, int id);
     QStack<QString> prepareInsertQuerry(const QString& tableName, const Entity& obj);
@@ -37,6 +38,8 @@ class DataBaseManager : public QObject
     Q_OBJECT
     MakeSingletonFromClass(DataBaseManager)
 public: //methods
+    using pEntity = std::shared_ptr<Entity>;
+
     void connectToDataBase();
     void init();
     ~DataBaseManager();
@@ -48,7 +51,8 @@ public slots:
     bool remove(const QString& tableName, const Entity& content);
     bool remove(const QString& tableName, int id);
     void optimizeTable(const QString& tableName);
-    const QVector<Entity> select(const QString& table);
+
+    QVector<pEntity> select(const QString& table, const QString& param = "");
 
 private: //properties
     QSqlDatabase db;

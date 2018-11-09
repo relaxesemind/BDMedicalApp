@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1260</width>
-    <height>739</height>
+    <height>719</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,11 +20,11 @@
       <x>16</x>
       <y>9</y>
       <width>1231</width>
-      <height>671</height>
+      <height>721</height>
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -60,14 +60,14 @@
        <item>
         <widget class="QPushButton" name="pushButton_8">
          <property name="text">
-          <string>Добавить изображение</string>
+          <string>Добавить изображения</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="pushButton_7">
          <property name="text">
-          <string>Удалить пациента</string>
+          <string>Удалить пациента(ов)</string>
          </property>
         </widget>
        </item>
@@ -97,7 +97,7 @@
         <x>10</x>
         <y>10</y>
         <width>741</width>
-        <height>621</height>
+        <height>481</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout"/>
@@ -413,6 +413,16 @@
         <widget class="QComboBox" name="comboBox_2"/>
        </item>
       </layout>
+     </widget>
+     <widget class="QTableWidget" name="tableWidget">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>500</y>
+        <width>741</width>
+        <height>121</height>
+       </rect>
+      </property>
      </widget>
     </widget>
    </widget>

@@ -22,16 +22,18 @@ public:
 private slots:
     void on_pushButton_6_clicked();
 
-    void addPatientToTableView(const PatientModel& patient);
-
     void on_pushButton_8_clicked();
 
     void on_pushButton_7_clicked();
 
     void on_pushButton_9_clicked();
 
+    void on_tabWidget_tabBarClicked(int index);
+
 private:
     void setupTableView();
+    void addPatientToTableView(const PatientModel& patient);
+    void updatePatientImages();
 
 private:
     Ui::MainWindow *ui;
