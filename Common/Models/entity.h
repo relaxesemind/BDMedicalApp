@@ -5,6 +5,7 @@
 #include <QVariantList>
 #include <QSqlQuery>
 #include <QVector>
+#include <memory>
 
 enum BDTypes {
     Int, Varchar, Char1, IDtype
@@ -17,5 +18,7 @@ public:
     virtual QVector<int> attr_type_mask()const;
     virtual ~Entity(){}
 };
+
+using pEntity = std::shared_ptr<Entity>;
 
 #endif // ENTITY_H

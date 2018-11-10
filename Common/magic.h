@@ -24,8 +24,8 @@ public: \
 
 #define str(__STRING__) QString("__STRING__")
 
-#define repeat_cycle(__count__) \
-    for (int i = 0; i < __count__; ++i)
+#define repeat(counter, count) \
+    for (int counter = 0; counter < count; ++counter)
 
 #define AppMessage(__title__, __description__) \
      QMessageBox::information(nullptr,QString(__title__), QString(__description__));

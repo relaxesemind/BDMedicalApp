@@ -45,7 +45,9 @@ SOURCES += \
     Common/Models/foldermodel.cpp \
     patientinputform.cpp \
     appmodel.cpp \
-    imageeditor.cpp
+    imageeditor.cpp \
+    Managers/Helpers/queryripper.cpp \
+    Common/consts.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -62,7 +64,8 @@ HEADERS += \
     patientinputform.h \
     appmodel.h \
     Common/consts.h \
-    imageeditor.h
+    imageeditor.h \
+    Managers/Helpers/queryripper.h
 
 FORMS += \
         mainwindow.ui \

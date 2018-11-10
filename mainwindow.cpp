@@ -10,8 +10,9 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
     setupTableView();
-//    DataBaseManager::shared().select(DBConst::TABLE_NAME_IMAGE);
+    setupDelegates();
 }
 
 MainWindow::~MainWindow()
@@ -24,51 +25,18 @@ void MainWindow::on_pushButton_6_clicked()//add patient
     PatientInputForm *form = new PatientInputForm(this);
     form->setModal(true);
     connect(form,&PatientInputForm::patientData,
-            this,&MainWindow::addPatientToTableView);
+            &APPCore::shared(),&APPCore::addPatient);
     form->show();
-}
-
-void MainWindow::addPatientToTableView(const PatientModel &patient)//slot
-{
-    DataBaseManager::shared().insert(DBConst::TABLE_NAME_PATIENT, patient);
-    APPModel::shared().update();
-}
-
-void MainWindow::updatePatientImages()
-{
-    QVector<DataBaseManager::pEntity> images = DataBaseManager::shared().select(DBConst::TABLE_NAME_IMAGE);
 }
 
 void MainWindow::on_pushButton_8_clicked() //add images to patient
 {
-    QModelIndexList selection = ui->tableView->selectionModel()->selectedRows();
-
-    if (selection.empty() || selection.size() > 1) {
-        AppMessage("Ошибка","Неверно выбран пациент");
-        return;
-    }
-
-    QModelIndex row = selection.first();
-    int patientID = row.data().toInt();
-
-    QStringList filenames = QFileDialog::getOpenFileNames(this,Global::CHOOSE_IMAGE_WINDOW_TITLE,
-                                                          QDir::currentPath(),Global::CHOOSE_IMAGE_TYPES);
-
-    while (!filenames.empty()) {
-        ImageModel image;
-        image.path = filenames.last();
-        image.patientID = patientID;
-        image.comment = "comment comment";
-        filenames.removeLast();
-        DataBaseManager::shared().insert(DBConst::TABLE_NAME_IMAGE,image);
-    }
+    QModelIndex index = getSelectedPatientIndex();
+    emit addImagesToPatient(index);
 }
 
 void MainWindow::setupTableView()
 {
-    DataBaseManager::shared().connectToDataBase();
-    DataBaseManager::shared().init();
-    APPModel::shared().initModels();
     ui->tableView->setModel(&APPModel::shared().patientTableModel);
     ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     ui->tableView->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -76,21 +44,26 @@ void MainWindow::setupTableView()
     APPModel::shared().update();
 }
 
+void MainWindow::setupDelegates()
+{
+    connect(this,&MainWindow::removePatient,
+            &APPCore::shared(),&APPCore::removePatient);
+    connect(this,&MainWindow::addImagesToPatient,
+            &APPCore::shared(),&APPCore::addImagesToPatient);
+}
+
 void MainWindow::on_pushButton_7_clicked() // remove buttn
 {
     QModelIndexList selection = ui->tableView->selectionModel()->selectedRows();
-    for (int i = 0; i < selection.count(); ++i) {
-        QModelIndex idx = selection.at(i);
-        int d = APPModel::shared().patientTableModel.data(idx).toInt();
-        DataBaseManager::shared().remove(DBConst::TABLE_NAME_PATIENT,d);
+
+    repeat(i,selection.count())
+    {
+        emit removePatient(selection.at(i));
     }
-    APPModel::shared().update();
 }
 
 void MainWindow::on_pushButton_9_clicked() // refresh
 {
-    DataBaseManager::shared().optimizeTable(DBConst::TABLE_NAME_PATIENT);
-    APPModel::shared().update();
 }
 
 void MainWindow::on_tabWidget_tabBarClicked(int index) // select tab - images
@@ -99,6 +72,37 @@ void MainWindow::on_tabWidget_tabBarClicked(int index) // select tab - images
         return;
     }
 
+    QModelIndex patientIndex = getSelectedPatientIndex();
+    QStack<QPixmap> images = APPCore::shared().getImagesForPatient(patientIndex);
+
+    ui->tableWidget->setColumnCount(images.count());
+    ui->tableWidget->setRowCount(1);
+    int i = 0;
+
+    while (!images.isEmpty())
+    {
+        QTableWidgetItem *item = new QTableWidgetItem;
+        ui->tableWidget->setRowHeight(i,110);
+        ui->tableWidget->setColumnWidth(i,110);
+
+        item->setData(Qt::DecorationRole, images.pop().scaled(100, 100,Qt::KeepAspectRatio));
+        ui->tableWidget->setItem(0,i,item);
+        ++i;
+    }
+}
+
+QModelIndex MainWindow::getSelectedPatientIndex()
+{
+    QModelIndexList selection = ui->tableView->selectionModel()->selectedRows();
+
+    if (selection.empty() || selection.size() > 1) {
+        AppMessage("Ошибка","Неверно выбран пациент");
+        return QModelIndex();
+    }
+    else
+    {
+        return selection.first();
+    }
 }
 
 

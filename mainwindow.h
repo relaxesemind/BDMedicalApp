@@ -3,7 +3,7 @@
 
 #include "patientinputform.h"
 #include "appmodel.h"
-#include "Common/Models/models.h"
+#include "appcore.h"
 
 #include <QMainWindow>
 
@@ -30,10 +30,14 @@ private slots:
 
     void on_tabWidget_tabBarClicked(int index);
 
+signals:
+    void removePatient(const QModelIndex& idx);
+    void addImagesToPatient(const QModelIndex& idx);
+
 private:
+    QModelIndex getSelectedPatientIndex();
     void setupTableView();
-    void addPatientToTableView(const PatientModel& patient);
-    void updatePatientImages();
+    void setupDelegates();
 
 private:
     Ui::MainWindow *ui;
