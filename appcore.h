@@ -9,6 +9,8 @@
 #include <QFileDialog>
 #include <QStack>
 #include <QPixmap>
+#include <QLineF>
+#include <QDir>
 
 class APPCore : public QObject
 {
@@ -17,14 +19,17 @@ class APPCore : public QObject
 
 public:
    void init();
-   QStack<QPixmap> getImagesForPatient(const QModelIndex& idx);
+   QVector<pImageModel> getPreviewImagesForPatient(const QModelIndex& idx);
+   pImageModel getSourceImageForPatient(const QModelIndex& patentId,int id);
 
 signals:
+   void activateImageForEdit(bool activate);
 
 public slots:
     void removePatient(const QModelIndex& idx);
     void addPatient(const PatientModel& patient);
     void addImagesToPatient(const QModelIndex& idx);
+    void saveMarkToDB(int imageID, const QPixmap& pixmap);
 
 private:
     void initDataBase();

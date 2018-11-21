@@ -9,6 +9,7 @@
 #include <QVariant>
 #include <QStack>
 #include <QSqlQuery>
+#include <QDebug>
 
 class QueryRipper
 {
@@ -20,6 +21,9 @@ public:
     QString createTableQuerry(const QString& tableName);
     QString deleteRowQuery(const QString& tableName, int id);
     QStack<QString> insertQuery(const QString& tableName, const Entity& obj);
+    QStack<QString> updateTableQuery(const QString& tableName, int idOld, const Entity &newObject);
+    QString removeTableQuery(const QString& tableName);
+    QString removeDataBase();
     //
     QVector<pEntity> parseObjects(QSqlQuery &query, const QString& tableName);
 

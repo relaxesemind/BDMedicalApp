@@ -1,18 +1,18 @@
-#ifndef RECTMODEL_H
-#define RECTMODEL_H
+#ifndef LINEMODEL_H
+#define LINEMODEL_H
 
 #include "entity.h"
 
-class RectModel : public Entity
+class LineModel : public Entity
 {
 public:
-    RectModel() = default;
+    LineModel() = default;
     QVariantList getData()const override;
     QVector<int> attr_type_mask()const override;
 
     int id;
     int thickness;
-    QString color;
+    QString colorName;
     int point_x1;
     int point_y1;
     int point_x2;
@@ -20,4 +20,4 @@ public:
     int imageID;
 };
 
-#endif // RECTMODEL_H
+#endif // LINEMODEL_H

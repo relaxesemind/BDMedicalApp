@@ -17,8 +17,10 @@ public:
     int marks = 0;
     QString diag_cito;
     QString diag_gisto;
-    QChar sex;
+    QString sex;
     int age;
 };
+
+using pPatientModel = std::shared_ptr<PatientModel>;
 
 #endif // PATIENTMODEL_H

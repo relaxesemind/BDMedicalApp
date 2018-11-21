@@ -2,10 +2,10 @@
 
 QVariantList PatientModel::getData()const
 {
-    QVariantList data;
-    data << id << name << images << marks << diag_cito
-         << diag_gisto << sex << age;
-    return data;
+    return QVariantList
+    {
+      id, name, images, marks, diag_cito, diag_gisto, sex, age
+    };
 }
 
 QVector<int> PatientModel::attr_type_mask()const
@@ -19,7 +19,7 @@ QVector<int> PatientModel::attr_type_mask()const
          BDTypes::Int,
          BDTypes::Varchar,
          BDTypes::Varchar,
-         BDTypes::Char1,
+         BDTypes::Varchar,
          BDTypes::Int
     };
 }

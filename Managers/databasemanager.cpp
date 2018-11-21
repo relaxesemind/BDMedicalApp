@@ -2,17 +2,14 @@
 
 void DataBaseManager::connectToDataBase()
 {
-//    if(!QFile(QCoreApplication::applicationDirPath()+ "/" + DBConst::DATABASE_NAME).exists()){
-//           this->openDataBase();
-//        } else {
-            this->openDataBase();
- //   }
+   openDataBase();
 }
 
 void DataBaseManager::init()
 {
     createTable(DBConst::TABLE_NAME_PATIENT);
     createTable(DBConst::TABLE_NAME_IMAGE);
+    createTable(DBConst::TABLE_NAME_MARKS);
 }
 
 DataBaseManager::~DataBaseManager()
@@ -27,25 +24,7 @@ bool DataBaseManager::insert(const QString &tableName, const Entity &content)
   QString queryStr = queryStack.pop();
   QVariantList data = content.getData();
   query.prepare(queryStr);
-
-  while (!queryStack.isEmpty()) {
-      QString bind = queryStack.pop();
-      QVariant var = data.constLast();
-      data.removeLast();
-
-     if (ripper.variantIsChar(var))
-     {
-         query.bindValue(bind, var.toChar());
-     }
-     else if (ripper.variantIsInt(var))
-     {
-         query.bindValue(bind, var.toInt());
-     }
-     else if (ripper.variantIsStr(var))
-     {
-         query.bindValue(bind,var.toString());
-     }
-  }
+  bindValuesForQuery(query,queryStack,data);
 
   if(!query.exec())
   {
@@ -60,23 +39,52 @@ bool DataBaseManager::insert(const QString &tableName, const Entity &content)
   }
 }
 
-bool DataBaseManager::remove(const QString &tableName, const Entity &content)
+bool DataBaseManager::update(const QString &tableName, const Entity &newObject)
 {
     QSqlQuery query(db);
+    QStack<QString> stack = ripper.updateTableQuery(tableName,newObject.getData().value(0).toInt(),newObject);
+    QVariantList data = newObject.getData();
 
+    if (stack.isEmpty())
+    {
+        qDebug()<<"update stack is empty";
+        return false;
+    }
+
+    QString queryStr = stack.pop();
+    qDebug() << queryStr;
+    query.prepare(queryStr);
+    bindValuesForQuery(query,stack,data);
+
+    if (!query.exec())
+    {
+        qDebug()<< "update row error!" << query.lastError();
+        return false;
+    }
+    else
+    {
+        return true;
+    }
+}
+
+bool DataBaseManager::remove(const QString &tableName, const Entity &content)
+{
+    return remove(tableName,content.getData().first().toInt());
 }
 
 bool DataBaseManager::remove(const QString &tableName, int id)
 {
-   QSqlQuery query(db);
-   QString queryStr = ripper.deleteRowQuery(tableName,id);
-   if (!query.exec(queryStr)) {
-       return false;
-   }
-   else
-   {
-       return true;
-   }
+    return baseQuery(ripper.deleteRowQuery(tableName,id),"remove row query");
+}
+
+bool DataBaseManager::removeTable(const QString &tableName)
+{
+    return baseQuery(ripper.removeTableQuery(tableName),"drop table query");
+}
+
+bool DataBaseManager::removeDataBase()
+{
+    return baseQuery(ripper.removeDataBase(),"Drop DataBase");
 }
 
 void DataBaseManager::optimizeTable(const QString &tableName)
@@ -89,9 +97,9 @@ void DataBaseManager::optimizeTable(const QString &tableName)
 QVector<pEntity> DataBaseManager::select(const QString &table, const QString &param)
 {
     QSqlQuery query(db);
-    QVector<pEntity> result;
+    QString qstr = ripper.selectFromTableQuery(table,param);
 
-    query.prepare(ripper.selectFromTableQuery(table,param));
+    query.prepare(qstr);
     if (!query.exec())
     {
         qDebug() << "SELECT ERROR !!!" << query.lastError();
@@ -104,6 +112,19 @@ QVector<pEntity> DataBaseManager::select(const QString &table, const QString &pa
     }
 
     return ripper.parseObjects(query,table);
+}
+
+pEntity DataBaseManager::select(const QString &table, int id)
+{
+    QVector<pEntity> vector = select(table," WHERE id = " + QString::number(id));
+    if (!vector.isEmpty())
+    {
+        return vector.first();
+    }
+    else
+    {
+        return nullptr;
+    }
 }
 
 bool DataBaseManager::openDataBase()
@@ -123,8 +144,7 @@ bool DataBaseManager::openDataBase()
     else
     {
         qDebug() << "Connect to MYSQL server!";
-        QSqlQuery q;
-        q.exec(ripper.createDataBaseQuery());
+        baseQuery(ripper.createDataBaseQuery(),"Create DataBase " + DBConst::DATABASE_NAME);
         db.setDatabaseName(DBConst::DATABASE_NAME);
         if (db.open())
         {
@@ -142,14 +162,42 @@ void DataBaseManager::closeDataBase()
 
 bool DataBaseManager::createTable(const QString &tableName)
 {
-    QSqlQuery querry(db);
-    if (!querry.exec(ripper.createTableQuerry(tableName)))
+    return baseQuery(ripper.createTableQuerry(tableName),"Create table " + tableName);
+}
+
+bool DataBaseManager::baseQuery(const QString &queryStr, const QString &title)
+{
+    QSqlQuery query(db);
+
+    if (!query.exec(queryStr))
     {
-        qDebug() << "Table create error " + tableName;
-        qDebug() << querry.lastError().text();
+        qDebug()<< title + " error!" << query.lastError();
         return false;
     }
-    else return true;
+    else
+    {
+        return true;
+    }
+}
+
+bool DataBaseManager::bindValuesForQuery(QSqlQuery &query, QStack<QString> &binds, QVariantList &values)
+{
+    while (!binds.isEmpty())
+    {
+        QString bind = binds.pop();
+        QVariant var = values.constLast();
+        values.removeLast();
+
+        if (ripper.variantIsInt(var))
+        {
+            query.bindValue(bind,var.toInt());
+        }
+        if (ripper.variantIsStr(var))
+        {
+            query.bindValue(bind,var.toString());
+        }
+    }
+    return true;
 }
 
 

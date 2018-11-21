@@ -2,11 +2,11 @@
 
 QVariantList ImageModel::getData()const
 {
-    QVariantList data;
-    data << id << path << value << kernels
-         << cells << scattered_cells
-         << structures << bare_kernels << comment << patientID;
-    return data;
+    return QVariantList
+    {
+        id, path, value, kernels, cells, scattered_cells,
+        structures, bare_kernels, comment, patientID
+    };
 }
 
 QVector<int> ImageModel::attr_type_mask()const

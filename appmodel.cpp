@@ -14,7 +14,7 @@ void APPModel::update()
 void APPModel::setupPatientTableModel()
 {
     patientTableModel.setTable(DBConst::TABLE_NAME_PATIENT);
-    patientTableModel.setEditStrategy(QSqlTableModel::OnManualSubmit);
+    patientTableModel.setEditStrategy(QSqlTableModel::OnFieldChange);
     patientTableModel.setHeaderData(0,Qt::Horizontal,QObject::tr("id"));
     patientTableModel.setHeaderData(1,Qt::Horizontal,QObject::tr("Имя"));
     patientTableModel.setHeaderData(2,Qt::Horizontal,QObject::tr("Изображения"));

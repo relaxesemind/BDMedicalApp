@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/backarrow.png</file>
+        <file>res/draw.png</file>
+        <file>res/draw_cur.png</file>
+        <file>res/erase.png</file>
+        <file>res/erase_cur.png</file>
+        <file>res/forward.png</file>
+        <file>res/minus.png</file>
+        <file>res/plus.png</file>
+        <file>res/Programming-Save-icon.png</file>
+    </qresource>
+</RCC>

@@ -1,14 +1,15 @@
-#include "rectmodel.h"
+#include "linemodel.h"
 
-QVariantList RectModel::getData()const
+
+QVariantList LineModel::getData()const
 {
     return QVariantList
     {
-        id, thickness, color, point_x1, point_y1, point_x2, point_y2, imageID
+        id, thickness, colorName, point_x1, point_y1, point_x2, point_y2, imageID
     };
 }
 
-QVector<int> RectModel::attr_type_mask()const
+QVector<int> LineModel::attr_type_mask()const
 {
     return QVector<int>
     {

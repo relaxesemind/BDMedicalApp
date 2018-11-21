@@ -46,12 +46,14 @@ public: \
 private: \
     __name__() = default; \
 
+#define makeFromEntity(_class_,_variable_,_entity_) _class_* _variable_ = dynamic_cast<_class_ *>(_entity_.get())
+
 #define attr(__name__,__params__) \
     std::make_pair(QString( __name__),QString(__params__))
 
 #define nullattr std::make_pair(QString(""), QString(""))
 #define IDattr std::make_pair(QString("id"), \
-                    QString("INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY"))
+                    QString("INT UNSIGNED AUTO_INCREMENT PRIMARY KEY"))
 
 //reference_cascade("users", "user_id")
 #define attr_reference_cascade(__destination_table_name__,__self__) \

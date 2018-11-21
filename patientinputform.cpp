@@ -6,8 +6,8 @@ PatientInputForm::PatientInputForm(QWidget *parent) :
     ui(new Ui::PatientInputForm)
 {
     ui->setupUi(this);
-    ui->comboBox->addItem("Female",QVariant(QChar('F')));
-    ui->comboBox->addItem("Male",QVariant(QChar('M')));
+    ui->comboBox->addItem("Female",QVariant(QString("F")));
+    ui->comboBox->addItem("Male",QVariant(QString("M")));
 }
 
 PatientInputForm::~PatientInputForm()
@@ -22,6 +22,6 @@ void PatientInputForm::on_buttonBox_accepted()
     patient.diag_cito = ui->lineEdit_2->text();
     patient.diag_gisto = ui->lineEdit_3->text();
     patient.age = ui->lineEdit_4->text().toInt();
-    patient.sex = ui->comboBox->currentData().toChar();
+    patient.sex = ui->comboBox->currentData().toString();
     emit patientData(patient);
 }

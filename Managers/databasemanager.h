@@ -25,6 +25,7 @@ class DataBaseManager : public QObject
 {
     Q_OBJECT
     MakeSingletonFromClass(DataBaseManager)
+
 public: //methods
     void connectToDataBase();
     void init();
@@ -33,12 +34,16 @@ public: //methods
 signals:
 
 public slots:
-    bool insert(const QString& tableName, const Entity& content);
-    bool remove(const QString& tableName, const Entity& content);
+    bool insert(const QString& tableName, const Entity&);
+    bool update(const QString& tableName, const Entity& newObject);
+    bool remove(const QString& tableName, const Entity&);
     bool remove(const QString& tableName, int id);
+    bool removeTable(const QString& tableName);
+    bool removeDataBase();
     void optimizeTable(const QString& tableName);
 
     QVector<pEntity> select(const QString& table, const QString& param = "");
+    pEntity select(const QString& table, int id);
 
 private: //properties
     QSqlDatabase db;
@@ -48,6 +53,8 @@ private: //methods
     bool openDataBase();
     void closeDataBase();
     bool createTable(const QString& tableName);
+    bool baseQuery(const QString& queryStr, const QString& title);
+    bool bindValuesForQuery(QSqlQuery &query, QStack<QString> &binds, QVariantList& values);
 };
 
 #endif // DATABASEMANAGER_H

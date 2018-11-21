@@ -18,6 +18,14 @@ int DBConst::TABLE_NUMBER_OF_ATTR(const QString &table_name)
     {
         return 8;
     }
+    if (table_name == DBConst::TABLE_NAME_LINE)
+    {
+        return 8;
+    }
+    if (table_name == DBConst::TABLE_NAME_MARKS)
+    {
+        return 3;
+    }
     return 0;
 }
 
@@ -28,11 +36,11 @@ const std::pair<QString, QString> DBConst::ATTRIBUTE(const QString &table_name, 
         switch (index)
         {
              case 0: return IDattr;
-             case 1: return attr("NAME"," VARCHAR(30) NOT NULL ");
+             case 1: return attr("NAME"," VARCHAR(150) NOT NULL ");
              case 2: return attr("IMAGES", " INT DEFAULT 0 ");
              case 3: return attr("MARKS"," INT DEFAULT 0");
-             case 4: return attr("DIAG_CITO"," VARCHAR(30) DEFAULT 'empty'");
-             case 5: return attr("DIAG_GISTO"," VARCHAR(30) DEFAULT 'empty' ");
+             case 4: return attr("DIAG_CITO"," VARCHAR(100) DEFAULT 'empty'");
+             case 5: return attr("DIAG_GISTO"," VARCHAR(100) DEFAULT 'empty' ");
              case 6: return attr("SEX", " CHAR(1) DEFAULT 'F'");
              case 7: return attr("AGE", " INT ");
              default:return nullattr;
@@ -44,7 +52,7 @@ const std::pair<QString, QString> DBConst::ATTRIBUTE(const QString &table_name, 
         switch (index)
         {
             case 0: return IDattr;
-            case 1: return attr("PATH"," VARCHAR(50) NOT NULL ");
+            case 1: return attr("PATH"," VARCHAR(256) NOT NULL ");
             case 2: return attr("value", " INT ");
             case 3: return attr("kernels", " VARCHAR(30) ");
             case 4: return attr("cells", " VARCHAR(40) ");
@@ -91,5 +99,40 @@ const std::pair<QString, QString> DBConst::ATTRIBUTE(const QString &table_name, 
         }
     }
 
+    if (table_name == DBConst::TABLE_NAME_LINE)
+    {
+        switch (index) {
+        case 0: return IDattr;
+        case 1: return attr("THICKNESS","INT NOT NULL");
+        case 2: return attr("COLOR","VARCHAR(15)");
+        case 3: return attr("POINT_X1","INT");
+        case 4: return attr("POINT_Y1","INT");
+        case 5: return attr("POINT_X2","INT");
+        case 6: return attr("POINT_Y2","INT");
+        case 7: return attr_reference_cascade(DBConst::TABLE_NAME_IMAGE,
+                                              DBConst::TABLE_REFERENCE_ATTR_LINE);
+        default: return nullattr;
+        }
+    }
+
+    if (table_name == DBConst::TABLE_NAME_MARKS)
+    {
+        switch (index) {
+        case 0: return IDattr;
+        case 1: return attr("PATH"," VARCHAR(256) NOT NULL");
+        case 2: return attr_reference_cascade(DBConst::TABLE_NAME_IMAGE,
+                                              DBConst::TABLE_REFERENCE_ATTR_MARKS);
+        default: return nullattr;
+        }
+    }
+
     return nullattr;
 }
+
+
+
+
+
+
+
+

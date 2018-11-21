@@ -2,7 +2,6 @@
 #define IMAGEMODEL_H
 
 #include "entity.h"
-#include "patientmodel.h"
 
 class ImageModel : public Entity
 {
@@ -22,5 +21,7 @@ public:
     QString comment;
     int patientID;
 };
+
+using pImageModel = std::shared_ptr<ImageModel>;
 
 #endif // IMAGEMODEL_H

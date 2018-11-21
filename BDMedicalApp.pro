@@ -13,12 +13,12 @@ CONFIG += c++14
 TARGET = BDMedicalApp
 TEMPLATE = app
 
-INCLUDEPATH += C:\OpenCV\install\include
+#INCLUDEPATH += C:\OpenCV\install\include
 
-LIBS += -LC:\OpenCV\install\x86\mingw\lib
-LIBS += -lopencv_core341 -lopencv_imgproc341 -lopencv_highgui341 \
--lopencv_ml341 -lopencv_video341 -lopencv_features2d341 -lopencv_calib3d341 \
--lopencv_objdetect341 -lopencv_flann341 -lopencv_videoio341
+#LIBS += -LC:\OpenCV\install\x86\mingw\lib
+#LIBS += -lopencv_core341 -lopencv_imgproc341 -lopencv_highgui341 \
+#-lopencv_ml341 -lopencv_video341 -lopencv_features2d341 -lopencv_calib3d341 \
+#-lopencv_objdetect341 -lopencv_flann341 -lopencv_videoio341
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings
@@ -47,7 +47,9 @@ SOURCES += \
     appmodel.cpp \
     imageeditor.cpp \
     Managers/Helpers/queryripper.cpp \
-    Common/consts.cpp
+    Common/consts.cpp \
+    Common/Models/linemodel.cpp \
+    Common/Models/markmodel.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -65,8 +67,13 @@ HEADERS += \
     appmodel.h \
     Common/consts.h \
     imageeditor.h \
-    Managers/Helpers/queryripper.h
+    Managers/Helpers/queryripper.h \
+    Common/Models/linemodel.h \
+    Common/Models/markmodel.h
 
 FORMS += \
         mainwindow.ui \
     patientinputform.ui
+
+RESOURCES += \
+    resources.qrc

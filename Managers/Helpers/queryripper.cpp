@@ -7,7 +7,7 @@ QString QueryRipper::createDataBaseQuery()
 
 QString QueryRipper::selectFromTableQuery(const QString &tableName, const QString& param)
 {
-    return " SELECT * FROM " + tableName + " " + param + ";";
+    return "SELECT * FROM " + tableName + " " + param + ";";
 }
 
 QString QueryRipper::createTableQuerry(const QString &tableName)
@@ -19,8 +19,8 @@ QString QueryRipper::createTableQuerry(const QString &tableName)
                       DBConst::ATTRIBUTE(tableName, index).second + ",";
     }
     attributes.chop(1);
-    QString createTableString("CREATE TABLE IF NOT EXISTS ");
-    createTableString += tableName + " ( " + attributes + " );";
+    QString createTableString("CREATE TABLE IF NOT EXISTS " + tableName);
+    createTableString += " ( " + attributes + " );";
     return createTableString;
 }
 
@@ -61,6 +61,42 @@ QStack<QString> QueryRipper::insertQuery(const QString &tableName, const Entity 
     return stack;
 }
 
+QStack<QString> QueryRipper::updateTableQuery(const QString &tableName, int idOld, const Entity &newObject)
+{
+    QVariantList newData = newObject.getData();
+    QStack<QString> result;
+
+    QString queryStr("UPDATE " + tableName + " SET ");
+    QString params;
+    QString ending(" WHERE id = " + QString::number(idOld) + ";");
+
+    for (int i = 1; i < DBConst::TABLE_NUMBER_OF_ATTR(tableName); ++i)
+    {
+        QString attribute = DBConst::ATTRIBUTE(tableName,i).first;
+        params += attribute + " = " + ":" + attribute + ", ";
+        result.push(":" + attribute);
+    }
+
+    if (params.isEmpty())
+    {
+        return QStack<QString>();
+    }
+    params.chop(2);
+    result.push(queryStr + params + ending);
+
+    return result;
+}
+
+QString QueryRipper::removeTableQuery(const QString &tableName)
+{
+    return QString("DROP TABLE IF EXISTS " + tableName);
+}
+
+QString QueryRipper::removeDataBase()
+{
+    return QString("DROP DATABASE IF EXISTS " + DBConst::DATABASE_NAME + ";");
+}
+
 QVector<pEntity> QueryRipper::parseObjects(QSqlQuery &query, const QString &tableName)
 {
     QVector<pEntity> result;
@@ -71,13 +107,16 @@ QVector<pEntity> QueryRipper::parseObjects(QSqlQuery &query, const QString &tabl
         {
             smartPointer(PatientModel,patient);
 
+            patient->id = query.value(0).toInt();
             patient->name = query.value(1).toString();
             patient->images = query.value(2).toInt();
             patient->marks = query.value(3).toInt();
             patient->diag_cito = query.value(4).toString();
             patient->diag_gisto = query.value(5).toString();
-            patient->sex = query.value(6).toChar();
+            patient->sex = query.value(6).toString();
             patient->age = query.value(7).toInt();
+
+            qDebug()<< "sex = " << patient->sex;
 
             result.append(patient);
         }
@@ -90,6 +129,7 @@ QVector<pEntity> QueryRipper::parseObjects(QSqlQuery &query, const QString &tabl
         {
            smartPointer(ImageModel,image);
 
+           image->id = query.value(0).toInt();
            image->path = query.value(1).toString();
            image->value = query.value(2).toInt();
            image->kernels = query.value(3).toString();
@@ -98,9 +138,27 @@ QVector<pEntity> QueryRipper::parseObjects(QSqlQuery &query, const QString &tabl
            image->structures = query.value(6).toString();
            image->bare_kernels = query.value(7).toString();
            image->comment = query.value(8).toString();
-           image->kernels = query.value(9).toString();
+           image->patientID = query.value(9).toInt();
 
            result.append(image);
+        }
+        return result;
+    }
+
+    if (tableName == DBConst::TABLE_NAME_LINE)
+    {
+        while(query.next())
+        {
+            smartPointer(LineModel,line);
+
+            line->thickness = query.value(1).toInt();
+            line->colorName = query.value(2).toString();
+            line->point_x1 = query.value(3).toInt();
+            line->point_y1 = query.value(4).toInt();
+            line->point_x2 = query.value(5).toInt();
+            line->point_y2 = query.value(6).toInt();
+            line->imageID = query.value(7).toInt();
+            result.append(line);
         }
         return result;
     }
