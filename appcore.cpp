@@ -26,6 +26,25 @@ QVector<pImageModel> APPCore::getPreviewImagesForPatient(const QModelIndex &idx)
      return vector;
 }
 
+QVector<pMarkModel> APPCore::getMarkImagesForImage(int imageID)
+{
+    QVector<pEntity> array = DataBaseManager::shared().select(DBConst::TABLE_NAME_MARKS,"WHERE " +
+                                                              DBConst::TABLE_REFERENCE_ATTR_MARKS + " = " + QString::number(imageID));
+    if (array.isEmpty())
+    {
+        return QVector<pMarkModel>();
+    }
+
+    QVector<pMarkModel> marks;
+
+    repeat(i,array.size())
+    {
+        pMarkModel mark = std::static_pointer_cast<MarkModel, Entity>(array.at(i));
+        marks.append(mark);
+    }
+    return marks;
+}
+
 pImageModel APPCore::getSourceImageForPatient(const QModelIndex& patentId, int position)
 {
     int pid = APPModel::shared().patientTableModel.data(patentId).toInt();
@@ -38,6 +57,19 @@ pImageModel APPCore::getSourceImageForPatient(const QModelIndex& patentId, int p
     }
     qDebug() << "preview image did selected";
     return std::static_pointer_cast<ImageModel,Entity>(pointers.at(position));
+}
+
+pMarkModel APPCore::getSourceMarkImage(int imageID, int position)
+{
+    QVector<pEntity> pointers =  DataBaseManager::shared().select(DBConst::TABLE_NAME_MARKS,
+             "WHERE " + DBConst::TABLE_REFERENCE_ATTR_MARKS + " = " + QString::number(imageID));
+    if (pointers.count() < position + 1)
+    {
+        qDebug() << "nullptr preview mark";
+        return nullptr;
+    }
+    qDebug() << "mark did selected";
+    return std::static_pointer_cast<MarkModel,Entity>(pointers.at(position));
 }
 
 void APPCore::removePatient(const QModelIndex &idx)
@@ -76,6 +108,7 @@ void APPCore::addImagesToPatient(const QModelIndex &idx)
     while (!filenames.empty()) {
         ImageModel image;
         image.path = filenames.last();
+        image.value = 0;
         image.patientID = patientID;
         filenames.removeLast();
         if (!DataBaseManager::shared().insert(DBConst::TABLE_NAME_IMAGE,image))
@@ -131,7 +164,7 @@ void APPCore::saveMarkToDB(int imageID, const QPixmap &pixmap)
 
    QString initialPath = QCoreApplication::applicationDirPath() + "/Marks";
    QString folder = "/" + patient->name + "_image_" + QString::number(image->id) + "_";
-   QString fileName = "mark_" + QString::number(image->value++) + ".png";
+   QString fileName = "mark_" + QString::number(++image->value) + ".png";
 
    if (!QDir(initialPath).exists())
    {
@@ -147,15 +180,15 @@ void APPCore::saveMarkToDB(int imageID, const QPixmap &pixmap)
    {
        qDebug() << "did save img " << fileName;
        MarkModel mark;
-       mark.path = fileName;
+       mark.path = initialPath + folder + "/"+ fileName;
        mark.imageID = imageID;
 
       if (DataBaseManager::shared().insert(DBConst::TABLE_NAME_MARKS, mark))
       {
-          ++image->value;
           ++patient->marks;
           DataBaseManager::shared().update(DBConst::TABLE_NAME_PATIENT,*patient);
           DataBaseManager::shared().update(DBConst::TABLE_NAME_IMAGE,*image);
+          APPModel::shared().update();
           qDebug() << "mark did inserted " << " patient name = " << patient->name << " marks = " << patient->marks;
       }
    }

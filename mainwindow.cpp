@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     setupTableView();
     setupDelegates();
     setupComboBoxes();
+    ui->imageEditorWidget_2->setActivity(false);
 }
 
 MainWindow::~MainWindow()
@@ -52,6 +53,7 @@ void MainWindow::setupDelegates()
     connect(this,&MainWindow::addImagesToPatient,
             &APPCore::shared(),&APPCore::addImagesToPatient);
     connect(ui->tableWidget,&QTableWidget::itemClicked,this,&MainWindow::previewImageDidSelected);
+    connect(ui->tableWidget_2,&QTableWidget::itemClicked,this,&MainWindow::markImageDidSelected);
     connect(ui->imageEditorWidget,&ImageEditor::imageDidZoomed,this,&MainWindow::updateZoomLabel);
     connect(this,&MainWindow::saveMarksToDataBase,&APPCore::shared(),&APPCore::saveMarkToDB);
     connect(&APPCore::shared(),&APPCore::activateImageForEdit,ui->imageEditorWidget,&ImageEditor::setActivity);
@@ -80,35 +82,67 @@ void MainWindow::on_pushButton_9_clicked() // refresh
 
 void MainWindow::on_tabWidget_tabBarClicked(int index) // select tab - images
 {
-    if (index != 1) {
-        ui->imageEditorWidget->clearEditor();
-        return;
-    }
-
-    QModelIndex patientIndex = getSelectedPatientIndex();
-    if (!patientIndex.isValid())
+    if (index == 1)
     {
-        ui->tabWidget->setCurrentIndex(0);
-        return;
-    }
-    QVector<pImageModel> images = APPCore::shared().getPreviewImagesForPatient(patientIndex);
-
-    ui->tableWidget->setColumnCount(images.count());
-    ui->tableWidget->setRowCount(1);
-
-    repeat(i,images.count())
-    {
-        QTableWidgetItem *item = new QTableWidgetItem;
-        ui->tableWidget->setRowHeight(i,110);
-        ui->tableWidget->setColumnWidth(i,110);
-        QPixmap pixmap(images.at(i).get()->path);
-        if (i == 0)
+        QModelIndex patientIndex = getSelectedPatientIndex();
+        if (!patientIndex.isValid())
         {
-            ui->imageEditorWidget->setImage(pixmap);
-            ui->imageEditorWidget->currentImageID = images.at(i).get()->id;
+            ui->tabWidget->setCurrentIndex(0);
+            return;
         }
-        item->setData(Qt::DecorationRole, pixmap.scaled(100, 100,Qt::KeepAspectRatio));
-        ui->tableWidget->setItem(0,i,item);
+        QVector<pImageModel> images = APPCore::shared().getPreviewImagesForPatient(patientIndex);
+
+        ui->tableWidget->setColumnCount(images.count());
+        ui->tableWidget->setRowCount(1);
+
+        repeat(i,images.count())
+        {
+            QTableWidgetItem *item = new QTableWidgetItem;
+            ui->tableWidget->setRowHeight(i,110);
+            ui->tableWidget->setColumnWidth(i,110);
+            QPixmap pixmap(images.at(i).get()->path);
+            if (i == 0)
+            {
+                ui->imageEditorWidget->setImage(pixmap);
+                ui->imageEditorWidget->currentImageID = images.at(i)->id;
+            }
+            item->setData(Qt::DecorationRole, pixmap.scaled(100, 100,Qt::KeepAspectRatio));
+            ui->tableWidget->setItem(0,i,item);
+        }
+    }
+
+    if (index == 2)
+    {
+        qDebug() << "tab marks did tap";
+        int imageID = ui->imageEditorWidget->currentImageID;
+        if (imageID == 0)
+        {
+            AppMessage("Выбор изображения", "Неверно выбрано изображение");
+            return;
+        }
+        else
+        {
+            QVector<pMarkModel> marks = APPCore::shared().getMarkImagesForImage(imageID);
+            qDebug() << "marks count = " << marks.count();
+
+            ui->tableWidget_2->setColumnCount(marks.count());
+            ui->tableWidget_2->setRowCount(1);
+
+            repeat(i,marks.count())
+            {
+                QTableWidgetItem *item = new QTableWidgetItem;
+                ui->tableWidget_2->setRowHeight(i,110);
+                ui->tableWidget_2->setColumnWidth(i,110);
+                QPixmap pixmap(marks.at(i)->path);
+                if (i == 0)
+                {
+                    ui->imageEditorWidget_2->setImage(pixmap);
+                    ui->imageEditorWidget_2->currentImageID = marks.at(i)->id;
+                }
+                item->setData(Qt::DecorationRole, pixmap.scaled(100, 100,Qt::KeepAspectRatio));
+                ui->tableWidget_2->setItem(0,i,item);
+            }
+        }
     }
 }
 
@@ -120,6 +154,15 @@ void MainWindow::previewImageDidSelected(QTableWidgetItem *item)
 
     ui->imageEditorWidget->setImage(QPixmap(imageModel->path));
     ui->imageEditorWidget->currentImageID = imageModel->id;
+}
+
+void MainWindow::markImageDidSelected(QTableWidgetItem *item)
+{
+    int position = item->column();
+    pMarkModel mark = APPCore::shared().getSourceMarkImage(ui->imageEditorWidget->currentImageID, position);
+
+    ui->imageEditorWidget_2->setImage(QPixmap(mark->path));
+    ui->imageEditorWidget_2->currentImageID = mark->id;
 }
 
 void MainWindow::updateZoomLabel(qreal value)

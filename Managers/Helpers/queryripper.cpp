@@ -163,6 +163,20 @@ QVector<pEntity> QueryRipper::parseObjects(QSqlQuery &query, const QString &tabl
         return result;
     }
 
+    if (tableName == DBConst::TABLE_NAME_MARKS)
+    {
+        while(query.next())
+        {
+            smartPointer(MarkModel,mark);
+
+            mark->id = query.value(0).toInt();
+            mark->path = query.value(1).toString();
+            mark->imageID = query.value(2).toInt();
+            result.append(mark);
+        }
+        return result;
+    }
+
     return QVector<pEntity>();
 }
 

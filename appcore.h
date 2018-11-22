@@ -20,7 +20,10 @@ class APPCore : public QObject
 public:
    void init();
    QVector<pImageModel> getPreviewImagesForPatient(const QModelIndex& idx);
+   QVector<pMarkModel> getMarkImagesForImage(int imageID);
    pImageModel getSourceImageForPatient(const QModelIndex& patentId,int id);
+   pMarkModel getSourceMarkImage(int imageID, int position);
+
 
 signals:
    void activateImageForEdit(bool activate);

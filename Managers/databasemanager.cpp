@@ -10,6 +10,7 @@ void DataBaseManager::init()
     createTable(DBConst::TABLE_NAME_PATIENT);
     createTable(DBConst::TABLE_NAME_IMAGE);
     createTable(DBConst::TABLE_NAME_MARKS);
+//    removeDataBase();
 }
 
 DataBaseManager::~DataBaseManager()
@@ -41,6 +42,11 @@ bool DataBaseManager::insert(const QString &tableName, const Entity &content)
 
 bool DataBaseManager::update(const QString &tableName, const Entity &newObject)
 {
+    if (newObject.getData().value(0).toInt() == 0)
+    {
+        qDebug() << "update Entity failed id = 0";
+        return false;
+    }
     QSqlQuery query(db);
     QStack<QString> stack = ripper.updateTableQuery(tableName,newObject.getData().value(0).toInt(),newObject);
     QVariantList data = newObject.getData();
