@@ -11,7 +11,7 @@ enum BDTypes {
     Int, Varchar, Char1, IDtype
 };
 
-class Entity : public QObject
+class Entity
 {
 public:
     virtual QVariantList getData()const;

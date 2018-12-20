@@ -54,12 +54,12 @@ const std::pair<QString, QString> DBConst::ATTRIBUTE(const QString &table_name, 
             case 0: return IDattr;
             case 1: return attr("PATH"," VARCHAR(256) NOT NULL ");
             case 2: return attr("value", " INT ");
-            case 3: return attr("kernels", " VARCHAR(30) ");
-            case 4: return attr("cells", " VARCHAR(40) ");
-            case 5: return attr("scattered_cells", " VARCHAR(20) ");
-            case 6: return attr("structures", " VARCHAR(20) ");
-            case 7: return attr("bare_kernels", " VARCHAR(20) ");
-            case 8: return attr("comment", " VARCHAR(50) ");
+            case 3: return attr("kernels", " VARCHAR(150) ");
+            case 4: return attr("cells", " VARCHAR(150) ");
+            case 5: return attr("scattered_cells", " VARCHAR(150) ");
+            case 6: return attr("structures", " VARCHAR(256) ");
+            case 7: return attr("bare_kernels", " VARCHAR(256) ");
+            case 8: return attr("comment", " VARCHAR(256) ");
             case 9: return attr_reference_cascade(DBConst::TABLE_NAME_PATIENT,
                                                   DBConst::TABLE_REFERENCE_ATTR_IMAGE);
             default: return nullattr;

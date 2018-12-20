@@ -26,6 +26,10 @@ QString QueryRipper::createTableQuerry(const QString &tableName)
 
 QString QueryRipper::deleteRowQuery(const QString &tableName, int id)
 {
+    if (id == 0)
+    {
+        return QString();
+    }
     return "DELETE FROM " + tableName + " WHERE " + DBConst::TABLE_ID_ATTR_NAME + " = " + QString::number(id);
 }
 

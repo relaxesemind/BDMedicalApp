@@ -80,6 +80,17 @@ void APPCore::removePatient(const QModelIndex &idx)
     APPModel::shared().patientTableModel.select();
 }
 
+void APPCore::removeImage(const QModelIndex &idx, int positionInTableWidget)
+{
+    pImageModel imageModel = APPCore::shared().getSourceImageForPatient(idx, positionInTableWidget);
+    if (DataBaseManager::shared().remove(DBConst::TABLE_NAME_IMAGE,*imageModel))
+    {
+        qDebug()<<"APPCore::removeImage path = " << imageModel->path;
+//        DataBaseManager::shared().select<PatientModel>();
+        APPModel::shared().update();
+    }
+}
+
 void APPCore::addPatient(const PatientModel &patient)
 {
     qDebug()<<"APPCore::addPatient name = " << patient.name;
@@ -194,6 +205,38 @@ void APPCore::saveMarkToDB(int imageID, const QPixmap &pixmap)
    }
 
    emit activateImageForEdit(true);
+}
+
+void APPCore::searchPatients(const QString &name, int min, int max, const QString &sex)
+{
+    QString filter;
+
+    if (!name.isEmpty())
+    {
+        filter += QString("NAME LIKE '%%1%' ").arg(name);
+
+        if (sex != "X")
+        {
+            filter += QString(" AND SEX LIKE '%%1%' ").arg(sex);
+        }
+
+    }
+    else if (sex != "X")
+    {
+        filter += QString("SEX LIKE '%%1%' ").arg(sex);
+    }
+
+    if (!filter.isEmpty())
+    {
+        filter += QString(" AND AGE >= %1 AND AGE <= %2 ").arg(min).arg(max);
+    }
+    else
+    {
+        filter = QString(" AGE >= %1 AND AGE <= %2 ").arg(min).arg(max);
+    }
+
+    APPModel::shared().patientTableModel.setFilter(filter);
+    APPModel::shared().patientTableModel.select();
 }
 
 void APPCore::initDataBase()

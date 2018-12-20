@@ -90,16 +90,6 @@ void ImageEditor::mouseMoveEvent(QMouseEvent *event)
         rectf.setBottomLeft(QPointF(previousPoint.x(),previousPoint.y()));
         rectf.setTopRight(QPointF(point.x(),point.y()));
         tempRectForVisual = scene.addRect(rectf,QPen(QBrush(color),thickness,Qt::SolidLine,Qt::RoundCap));
-//        RectModel rectModel;
-//        rectModel.imageID = currentImageID;
-//        rectModel.color = colorName;
-//        rectModel.thickness = cast(int,thickness);
-//        rectModel.point_x1 = cast(int,rectf.bottomLeft().x());
-//        rectModel.point_y1 = cast(int,rectf.bottomLeft().y());
-//        rectModel.point_x2 = cast(int,rectf.topRight().x());
-//        rectModel.point_y2 = cast(int, rectf.topRight().y());
-//        rect_stack.push(rectModel);
-
         break;
     }
   }

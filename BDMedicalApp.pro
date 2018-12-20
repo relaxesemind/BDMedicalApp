@@ -49,7 +49,8 @@ SOURCES += \
     Managers/Helpers/queryripper.cpp \
     Common/consts.cpp \
     Common/Models/linemodel.cpp \
-    Common/Models/markmodel.cpp
+    Common/Models/markmodel.cpp \
+    searchform.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -69,11 +70,13 @@ HEADERS += \
     imageeditor.h \
     Managers/Helpers/queryripper.h \
     Common/Models/linemodel.h \
-    Common/Models/markmodel.h
+    Common/Models/markmodel.h \
+    searchform.h
 
 FORMS += \
         mainwindow.ui \
-    patientinputform.ui
+    patientinputform.ui \
+    searchform.ui
 
 RESOURCES += \
     resources.qrc

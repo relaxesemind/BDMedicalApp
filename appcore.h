@@ -30,9 +30,11 @@ signals:
 
 public slots:
     void removePatient(const QModelIndex& idx);
+    void removeImage(const QModelIndex& idx, int positionInTableWidget);
     void addPatient(const PatientModel& patient);
     void addImagesToPatient(const QModelIndex& idx);
     void saveMarkToDB(int imageID, const QPixmap& pixmap);
+    void searchPatients(const QString& name, int min, int max, const QString& sex);
 
 private:
     void initDataBase();

@@ -36,6 +36,7 @@ bool DataBaseManager::insert(const QString &tableName, const Entity &content)
   }
   else
   {
+      qDebug() << "sql query:" << query.executedQuery();
       return true;
   }
 }
@@ -205,6 +206,9 @@ bool DataBaseManager::bindValuesForQuery(QSqlQuery &query, QStack<QString> &bind
     }
     return true;
 }
+
+
+
 
 
 

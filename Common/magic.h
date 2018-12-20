@@ -30,6 +30,24 @@ public: \
 #define AppMessage(__title__, __description__) \
      QMessageBox::information(nullptr,QString(__title__), QString(__description__));
 
+#define AppConfirmDialog(_title_,_okAction_) \
+    QMessageBox box; \
+    QPushButton *okBut = box.addButton(QMessageBox::Ok); \
+    QPushButton *cancelBut = box.addButton(QMessageBox::Cancel); \
+    box.setText(_title_); \
+    box.exec(); \
+    if (box.clickedButton() == okBut) \
+    {\
+        _okAction_(); \
+    }\
+ \
+    if (box.clickedButton() == cancelBut)\
+    {\
+        qDebug() << "cancel";\
+    }\
+
+//#define AppConfirmDialog(title,)
+
 #define smartPointer(className, variable) std::shared_ptr<className> \
                                 variable = std::make_shared<className>();
 
