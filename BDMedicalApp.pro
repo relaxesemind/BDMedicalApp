@@ -38,19 +38,15 @@ SOURCES += \
     Managers/databasemanager.cpp \
     appcore.cpp \
     Common/Models/entity.cpp \
-    Common/Models/circlemodel.cpp \
-    Common/Models/rectmodel.cpp \
     Common/Models/patientmodel.cpp \
-    Common/Models/imagemodel.cpp \
-    Common/Models/foldermodel.cpp \
     patientinputform.cpp \
     appmodel.cpp \
     imageeditor.cpp \
     Managers/Helpers/queryripper.cpp \
     Common/consts.cpp \
-    Common/Models/linemodel.cpp \
     Common/Models/markmodel.cpp \
-    searchform.cpp
+    searchform.cpp \
+    Common/Models/imagemodel.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -58,18 +54,14 @@ HEADERS += \
     Common/magic.h \
     appcore.h \
     Common/Models/entity.h \
-    Common/Models/circlemodel.h \
-    Common/Models/rectmodel.h \
     Common/Models/models.h \
     Common/Models/patientmodel.h \
     Common/Models/imagemodel.h \
-    Common/Models/foldermodel.h \
     patientinputform.h \
     appmodel.h \
     Common/consts.h \
     imageeditor.h \
     Managers/Helpers/queryripper.h \
-    Common/Models/linemodel.h \
     Common/Models/markmodel.h \
     searchform.h
 

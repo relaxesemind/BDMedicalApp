@@ -58,6 +58,12 @@ private slots:
 
     void on_pushButton_10_clicked();
 
+    void on_pushButton_clicked();
+
+    void on_pushButton_2_clicked();
+
+    void on_pushButton_12_clicked();
+
 public slots:
 
     void updateZoomLabel(qreal value);
@@ -73,6 +79,8 @@ private:
     void setupTableView();
     void setupDelegates();
     void setupComboBoxes();
+    void clearInfoAboutImage();
+    void showInfoAboutImage(pImageModel image);
 
 private:
     Ui::MainWindow *ui;

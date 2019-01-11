@@ -42,8 +42,11 @@ public:
     qreal thickness;
     int currentImageID;
     QStack<QLineF> lines_stack;
-    QStack<RectModel> rect_stack;
-    QStack<LineModel> modelsLine_stack;
+//    QStack<RectModel> rect_stack;
+//    QStack<LineModel> modelsLine_stack;
+
+    QPixmap getTransperentMark();
+
     bool isActive();
     bool getActivity();
     void setTool(const DrawTool &value);

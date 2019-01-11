@@ -7,21 +7,6 @@
 
 #define quo QString("'")
 
-#define class_singleton(__name__) \
-class __name__  : public QObject \
-{ \
-    Q_OBJECT \
-private: \
-    __name__() = default; \
-    __name__(const __name__&); \
-    __name__& operator=(__name__&); \
-public: \
-    static __name__& shared() { \
-        static __name__  manager; \
-        return manager; \
-} \
-    ~__name__(); \
-
 #define str(__STRING__) QString("__STRING__")
 
 #define repeat(counter, count) \
@@ -31,22 +16,20 @@ public: \
      QMessageBox::information(nullptr,QString(__title__), QString(__description__));
 
 #define AppConfirmDialog(_title_,_okAction_) \
-    QMessageBox box; \
-    QPushButton *okBut = box.addButton(QMessageBox::Ok); \
-    QPushButton *cancelBut = box.addButton(QMessageBox::Cancel); \
-    box.setText(_title_); \
-    box.exec(); \
-    if (box.clickedButton() == okBut) \
+    QMessageBox _box; \
+    QPushButton *_okBut = _box.addButton(QMessageBox::Ok); \
+    QPushButton *_cancelBut = _box.addButton(QMessageBox::Cancel); \
+    _box.setText(_title_); \
+    _box.exec(); \
+    if (_box.clickedButton() == _okBut) \
     {\
         _okAction_(); \
     }\
  \
-    if (box.clickedButton() == cancelBut)\
+    if (_box.clickedButton() == _cancelBut)\
     {\
         qDebug() << "cancel";\
     }\
-
-//#define AppConfirmDialog(title,)
 
 #define smartPointer(className, variable) std::shared_ptr<className> \
                                 variable = std::make_shared<className>();

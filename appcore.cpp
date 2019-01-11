@@ -12,6 +12,7 @@ QVector<pImageModel> APPCore::getPreviewImagesForPatient(const QModelIndex &idx)
               "WHERE " + DBConst::TABLE_REFERENCE_ATTR_IMAGE + " = " + QString::number(id));
      if (pointers.isEmpty())
      {
+         qDebug() << "APPCore::getPreviewImagesForPatient 'pointers.isEmpty()'";
          return QVector<pImageModel>();
      }
 
@@ -22,7 +23,7 @@ QVector<pImageModel> APPCore::getPreviewImagesForPatient(const QModelIndex &idx)
          pImageModel image = std::static_pointer_cast<ImageModel,Entity>(pointers.at(i));
          vector.append(image);
      }
-
+     qDebug() << "APPCore::getPreviewImagesForPatient was added " << vector.count() << " images";
      return vector;
 }
 
@@ -32,6 +33,7 @@ QVector<pMarkModel> APPCore::getMarkImagesForImage(int imageID)
                                                               DBConst::TABLE_REFERENCE_ATTR_MARKS + " = " + QString::number(imageID));
     if (array.isEmpty())
     {
+        qDebug() << "APPCore::getMarkImagesForImage 'array.isEmpty()'";
         return QVector<pMarkModel>();
     }
 
@@ -42,6 +44,7 @@ QVector<pMarkModel> APPCore::getMarkImagesForImage(int imageID)
         pMarkModel mark = std::static_pointer_cast<MarkModel, Entity>(array.at(i));
         marks.append(mark);
     }
+    qDebug() << "APPCore::getMarkImagesForImage get " << marks.count() << " marks ";
     return marks;
 }
 
@@ -75,7 +78,6 @@ pMarkModel APPCore::getSourceMarkImage(int imageID, int position)
 void APPCore::removePatient(const QModelIndex &idx)
 {
     int id = APPModel::shared().patientTableModel.data(idx).toInt();
-//    QString name = APPModel::shared().patientTableModel.data(QModelIndex()).toString();
     DataBaseManager::shared().remove(DBConst::TABLE_NAME_PATIENT,id);
     APPModel::shared().patientTableModel.select();
 }
@@ -86,7 +88,6 @@ void APPCore::removeImage(const QModelIndex &idx, int positionInTableWidget)
     if (DataBaseManager::shared().remove(DBConst::TABLE_NAME_IMAGE,*imageModel))
     {
         qDebug()<<"APPCore::removeImage path = " << imageModel->path;
-//        DataBaseManager::shared().select<PatientModel>();
         APPModel::shared().update();
     }
 }
@@ -132,7 +133,8 @@ void APPCore::addImagesToPatient(const QModelIndex &idx)
     {
        AppMessage("Сообщение", "Изображения успешно добавлены");
        pEntity entity = DataBaseManager::shared().select(DBConst::TABLE_NAME_PATIENT, patientID);
-       makeFromEntity(PatientModel,patient,entity);
+
+       pPatientModel patient =  std::static_pointer_cast<PatientModel,Entity>(entity);
 
        QVector<pEntity> pointers =  DataBaseManager::shared().select(DBConst::TABLE_NAME_IMAGE,
                 "WHERE " + DBConst::TABLE_REFERENCE_ATTR_IMAGE + " = " + QString::number(patientID));
@@ -237,6 +239,7 @@ void APPCore::searchPatients(const QString &name, int min, int max, const QStrin
 
     APPModel::shared().patientTableModel.setFilter(filter);
     APPModel::shared().patientTableModel.select();
+    qDebug() << "patient filter = " << filter;
 }
 
 void APPCore::initDataBase()

@@ -149,24 +149,6 @@ QVector<pEntity> QueryRipper::parseObjects(QSqlQuery &query, const QString &tabl
         return result;
     }
 
-    if (tableName == DBConst::TABLE_NAME_LINE)
-    {
-        while(query.next())
-        {
-            smartPointer(LineModel,line);
-
-            line->thickness = query.value(1).toInt();
-            line->colorName = query.value(2).toString();
-            line->point_x1 = query.value(3).toInt();
-            line->point_y1 = query.value(4).toInt();
-            line->point_x2 = query.value(5).toInt();
-            line->point_y2 = query.value(6).toInt();
-            line->imageID = query.value(7).toInt();
-            result.append(line);
-        }
-        return result;
-    }
-
     if (tableName == DBConst::TABLE_NAME_MARKS)
     {
         while(query.next())

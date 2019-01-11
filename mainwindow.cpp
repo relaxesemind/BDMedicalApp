@@ -15,9 +15,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     setupDelegates();
     setupComboBoxes();
     ui->imageEditorWidget_2->setActivity(false);
-
-    PatientModel patient = DataBaseManager::shared().selectObject<PatientModel>(0);
-    qDebug() << "patient name = " << patient.id;
 }
 
 MainWindow::~MainWindow()
@@ -25,150 +22,13 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-QString GetRandomString()
-{
-   const QString possibleCharacters("АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя");
-   const int randomStringLength = 16; // assuming you want random strings of 12 characters
-
-   QString randomString;
-   for(int i=0; i<randomStringLength; ++i)
-   {
-       int index = qrand() % possibleCharacters.length();
-       QChar nextChar = possibleCharacters.at(index);
-       randomString.append(nextChar);
-   }
-   return randomString;
-}
-
 void MainWindow::on_pushButton_6_clicked()//add patient
 {
-//    PatientInputForm *form = new PatientInputForm(this);
-//    form->setModal(true);
-//    connect(form,&PatientInputForm::patientData,
-//            &APPCore::shared(),&APPCore::addPatient);
-//    form->show();
-    QStringList list
-    {
-        "Капустина Светлана Игоревна",
-        "Сулимова Анастасия Всеволодовна",
-        "Ягешев Эрнст Изяславович",
-        "Жданов Алексей Измаилович",
-        "Антонович Кир Леонович",
-        "Сазонтов Тарас Никитевич",
-        "Изотов Аким Даниилович",
-        "Истомина Любовь Родионовна",
-        "Челомеев Аскольд Самсонович",
-        "Сюкосева Регина Вячеславовна",
-        "Серебров Михаил Филиппович",
-        "Машира Нона Игнатиевна",
-        "Шульгин Осип Вадимович",
-        "Жиглов Никон Эмилевич",
-        "Ясаев Кондратий Вадимович",
-        "Ажикелямова Алина Трофимовна",
-        "Ершова Дина Романовна",
-        "Курбанова Анисья Потаповна",
-        "Желдин Петр Серафимович",
-        "Драчёв Матвей Данилевич",
-        "Грехов Валентин Федотович",
-        "Седова Ника Ефимовна",
-        "Степихова Каролина Виталиевна",
-        "Швецова Анфиса Александровна",
-        "Лагошина Варвара Карповна",
-        "Гречко Ярослава Данииловна",
-        "Иноземцева Мария Геннадиевна",
-        "Пушкин Варфоломей Ростиславович",
-        "Бельтюков Варфоломей Онуфриевич",
-        "Курдин Андрон Адамович",
-        "Устимовича Нина Святославовна",
-        "Антонович Максим Александрович",
-        "Роговский Пимен Родионович",
-        "Рошет Гавриил Левович",
-        "Леонидов Анатолий Сергеевич",
-        "Ясюлевича Людмила Степановна",
-        "Удома Арина Мефодиевна",
-        "Агабабян Сергей Леонтиевич",
-        "Бок Мстислав Куприянович",
-        "Можаева Любава Владленовна",
-        "Якунчиков Феофан Ипатович",
-        "Чечёткина Рената Ефимовна",
-        "Цыганкова Валентина Игнатиевна",
-        "Яикбаева Агния Ипполитовна",
-        "Януковича Полина Борисовна",
-        "Лукашенко Адриан Ермолаевич",
-        "Дудченко Роза Леонидовна",
-        "Цехановецкий Ираклий Несторович",
-        "Кожухова Ксения Мефодиевна",
-        "Эйлера Алла Святославовна",
-        "Суворкин Владлен Иннокентиевич",
-        "Яценко Игорь Ипполитович",
-        "Дорохов Всеслав Ефремович",
-        "Ляпин Емельян Гордеевич",
-        "Приходько Лада Виталиевна",
-        "Благово Марина Карповна",
-        "Саламатова Берта Захаровна",
-        "Соломинцева Елена Виталиевна",
-        "Дегтярев Архип Гордеевич",
-        "Богачёва Алина Юлиевна",
-        "Куприянова Александра Владиленовна",
-        "Мазурин Якуб Мирославович",
-        "Колобова Доминика Ивановна",
-        "Воейков Адам Владимирович",
-        "Созонтова Лариса Константиновна",
-        "Яндарбиев Онуфрий Филимонович",
-        "Овчинников Иван Казимирович",
-        "Харькова Альбина Всеволодовна",
-        "Цветкова Стела Елизаровна",
-        "Будылин Мстислав Ермолаевич",
-        "Шуляк Эмиль Елисеевич",
-        "Ястребенецкий Лукьян Самуилович",
-        "Агальцов Федор Проклович",
-        "Новожилова Диана Никитевна",
-        "Каржаубаев Герасим Феликсович",
-        "Кантонистов Максимильян Адрианович",
-        "Сотников Рубен Даниилович",
-        "Кривова Марианна Тихоновна",
-        "Канкия Бронислав Кириллович",
-        "Котова Христина Афанасиевна",
-        "Ягеман Эдуард Никитевич",
-        "Тотенкова Доминика Николаевна",
-        "Былинкина Зоя Серафимовна",
-        "Мутовин Николай Пахомович",
-        "Божко Анфиса Глебовна",
-        "Юдицкий Савелий Герасимович",
-        "Опринчук Петр Федосиевич",
-        "Сусоев Роман Гордеевич",
-        "Крылова Татьяна Елисеевна",
-        "Бухаров Потап Олегович",
-        "Николаева Ирина Емельяновна",
-        "Колотушкин Петр Ефремович",
-        "Арсеньев Родион Пахомович",
-        "Соловьева Варвара Ираклиевна",
-        "Мажулина Берта Брониславовна",
-        "Угличинина Доминика Тимуровна",
-        "Мосина Злата Тихоновна",
-        "Деменкова Всеслава Павеловна",
-        "Сьянова Влада Семеновна",
-        "Лавлинский Никон Эмилевич"
-    };
-
-    for ( const QString& name : list)
-    {
-        PatientModel patient;
-        patient.name = name;
-        patient.diag_cito = GetRandomString();
-        patient.diag_gisto = GetRandomString();
-        if (name.endsWith("а"))
-        {
-            patient.sex = "F";
-        }
-        else
-        {
-            patient.sex = "M";
-        }
-        patient.age = 9 + (rand() % static_cast<int>(92 - 9 + 1));
-        APPCore::shared().addPatient(patient);
-    }
-
+    PatientInputForm *form = new PatientInputForm(this);
+    form->setModal(true);
+    connect(form,&PatientInputForm::patientData,
+            &APPCore::shared(),&APPCore::addPatient);
+    form->show();
 }
 
 void MainWindow::on_pushButton_8_clicked() //add images to patient
@@ -207,6 +67,27 @@ void MainWindow::setupComboBoxes()
     ui->comboBox_2->addItems(QStringList{"1","2","3","4","5","6","7","8","9","10"});
 }
 
+void MainWindow::clearInfoAboutImage()
+{
+    ui->plainTextBareKernels->clear();
+    ui->plainTextCells->clear();
+    ui->plainTextComment->clear();
+    ui->plainTextKernels->clear();
+    ui->plainTextScaterredCells->clear();
+    ui->plainTextStructures->clear();
+}
+
+void MainWindow::showInfoAboutImage(pImageModel image)
+{
+    clearInfoAboutImage();
+    ui->plainTextBareKernels->appendPlainText(image->bare_kernels);
+    ui->plainTextCells->appendPlainText(image->cells);
+    ui->plainTextComment->appendPlainText(image->comment);
+    ui->plainTextKernels->appendPlainText(image->kernels);
+    ui->plainTextScaterredCells->appendPlainText(image->scattered_cells);
+    ui->plainTextStructures->appendPlainText(image->structures);
+}
+
 void MainWindow::on_pushButton_7_clicked() // remove buttn
 {
     QModelIndexList selection = ui->tableView->selectionModel()->selectedRows();
@@ -232,6 +113,9 @@ void MainWindow::on_tabWidget_tabBarClicked(int index) // select tab - images
 
     if (index == 1)
     {
+        ui->tableWidget->clear();
+        ui->imageEditorWidget->clearEditor();
+
         QModelIndex patientIndex = getSelectedPatientIndex();
         if (!patientIndex.isValid())
         {
@@ -240,8 +124,16 @@ void MainWindow::on_tabWidget_tabBarClicked(int index) // select tab - images
         }
         QVector<pImageModel> images = APPCore::shared().getPreviewImagesForPatient(patientIndex);
 
+        if (images.isEmpty())
+        {
+            return;
+        }
+
         ui->tableWidget->setColumnCount(images.count());
         ui->tableWidget->setRowCount(1);
+        ui->imageEditorWidget->setImage(QPixmap(images.at(0)->path));
+        ui->imageEditorWidget->currentImageID = images.at(0)->id;
+        showInfoAboutImage(images.at(0));
 
         repeat(i,images.count())
         {
@@ -249,11 +141,6 @@ void MainWindow::on_tabWidget_tabBarClicked(int index) // select tab - images
             ui->tableWidget->setRowHeight(i,110);
             ui->tableWidget->setColumnWidth(i,110);
             QPixmap pixmap(images.at(i).get()->path);
-            if (i == 0)
-            {
-                ui->imageEditorWidget->setImage(pixmap);
-                ui->imageEditorWidget->currentImageID = images.at(i)->id;
-            }
             item->setData(Qt::DecorationRole, pixmap.scaled(100, 100,Qt::KeepAspectRatio));
             ui->tableWidget->setItem(0,i,item);
         }
@@ -261,8 +148,11 @@ void MainWindow::on_tabWidget_tabBarClicked(int index) // select tab - images
 
     if (index == 2)
     {
+        ui->tableWidget_2->clear();
+        ui->imageEditorWidget_2->clearEditor();
+        clearInfoAboutImage();
+
         qDebug() << "tab marks did tap";
-//        ui->imageEditorWidget_2->clearEditor();
         int imageID = ui->imageEditorWidget->currentImageID;
         if (imageID == 0)
         {
@@ -304,10 +194,16 @@ void MainWindow::previewImageDidSelected(QTableWidgetItem *item)
 {
     int position = item->column();
     QModelIndex patientIndex = getSelectedPatientIndex();
-    pImageModel imageModel = APPCore::shared().getSourceImageForPatient(patientIndex, position);
+    pImageModel image = APPCore::shared().getSourceImageForPatient(patientIndex, position);
 
-    ui->imageEditorWidget->setImage(QPixmap(imageModel->path));
-    ui->imageEditorWidget->currentImageID = imageModel->id;
+    if (image == nullptr)
+    {
+        return;
+    }
+
+    ui->imageEditorWidget->setImage(QPixmap(image->path));
+    showInfoAboutImage(image);
+    ui->imageEditorWidget->currentImageID = image->id;
 }
 
 void MainWindow::markImageDidSelected(QTableWidgetItem *item)
@@ -394,6 +290,67 @@ void MainWindow::on_pushButton_10_clicked()//clear filter
 {
     APPModel::shared().patientTableModel.setFilter("");
     APPModel::shared().patientTableModel.select();
+    qDebug() << "patient filter is empty ";
 }
+
+void MainWindow::on_pushButton_clicked() // save__text_comments
+{
+    int imageid = ui->imageEditorWidget->currentImageID;
+    if (imageid == 0)
+    {
+        return;
+    }
+
+   pEntity ent = DataBaseManager::shared().select(DBConst::TABLE_NAME_IMAGE,imageid);
+   if (ent == nullptr)
+   {
+       return;
+   }
+
+    pImageModel image = std::static_pointer_cast<ImageModel,Entity>(ent);
+
+    image->comment = ui->plainTextComment->toPlainText();
+    image->cells = ui->plainTextCells->toPlainText();
+    image->kernels = ui->plainTextKernels->toPlainText();
+    image->structures = ui->plainTextStructures->toPlainText();
+    image->scattered_cells = ui->plainTextScaterredCells->toPlainText();
+    image->bare_kernels = ui->plainTextBareKernels->toPlainText();
+
+    DataBaseManager::shared().update(DBConst::TABLE_NAME_IMAGE,*image);
+}
+
+void MainWindow::on_pushButton_2_clicked() // cancel__text__comments
+{
+    int imageid = ui->imageEditorWidget->currentImageID;
+    if (imageid == 0)
+    {
+        return;
+    }
+
+    pEntity ent = DataBaseManager::shared().select(DBConst::TABLE_NAME_IMAGE,imageid);
+    if (ent == nullptr)
+    {
+        return;
+    }
+
+    pImageModel image = std::static_pointer_cast<ImageModel,Entity>(ent);
+    showInfoAboutImage(image);
+}
+
+void MainWindow::on_pushButton_12_clicked() // remove image
+{
+    QTableWidgetItem *item = ui->tableWidget->selectedItems().first();
+
+    AppConfirmDialog("Удалить выбранное изображение?",[&]{
+        emit removeImage(getSelectedPatientIndex(),item->column());
+        ui->tableWidget->removeColumn(item->column());
+    });
+}
+
+
+
+
+
+
 
 

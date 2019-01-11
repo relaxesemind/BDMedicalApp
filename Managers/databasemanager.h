@@ -31,6 +31,7 @@ public: //methods
     void connectToDataBase();
     void init();
     ~DataBaseManager();
+
     template<class T>
     QVector<T> selectObjects();
 
@@ -66,6 +67,7 @@ private: //methods
 template<class T>
 QVector<T> DataBaseManager::selectObjects()
 {
+#warning (TODO)
    if (!std::is_base_of<Entity,T>::value)
    {
        qDebug() << "failed template select << not derived class";
@@ -99,8 +101,12 @@ QVector<T> DataBaseManager::selectObjects()
 }
 
 template<class T>
-T DataBaseManager::selectObject(int id)
+T DataBaseManager::selectObject(int _id)
 {
+#warning (TODO)
+
+    int id = _id - 1;
+
     if (!std::is_base_of<Entity,T>::value)
     {
         qDebug() << "failed template select << not derived class";
@@ -109,9 +115,7 @@ T DataBaseManager::selectObject(int id)
 
    QVector<T> array = selectObjects<T>();
 
-
-
-   if (id > array.count() - 1)
+   if (id > array.count())
    {
        return T();
    }

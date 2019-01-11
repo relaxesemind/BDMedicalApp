@@ -14,6 +14,16 @@ ImageEditor::ImageEditor(QWidget* widget) : QGraphicsView (widget)
 
 ImageEditor::~ImageEditor()
 {
+}
+
+QPixmap ImageEditor::getTransperentMark()
+{
+//    QRectF rec();
+
+//    QImage image(boundingRect().size().toSize(),
+//                    QImage::Format_ARGB32_Premultiplied);
+//    image.fill(0);
+//    QPainter painter(&image);
 
 }
 
@@ -34,9 +44,11 @@ void ImageEditor::setImage(const QPixmap &pixmap)
 
 void ImageEditor::wheelEvent(QWheelEvent *event)
 {
-    if (scene.items().isEmpty()){
+    if (scene.items().isEmpty())
+    {
         return;
     }
+
     QPoint degrees = event->angleDelta() / 8;
     if (degrees.y() > 0)
     {
