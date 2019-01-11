@@ -6,7 +6,7 @@
 - Создание(Отрисовка)/Удаление разметок к изображениям пациента
 
 # Главное окно (пациенты)
-  ![alt text](https://pp.userapi.com/c852024/v852024825/8d677/5hpQwYDwbAk.jpg)
+  ![alt text](https://pp.userapi.com/c852024/v852024825/8d6c5/W8BLZp1LDSg.jpg)
 # Изображения пациента (комментарии)
   ![alt text](https://pp.userapi.com/c852024/v852024825/8d68e/hXjD0vFSU6w.jpg)
 # Изображения пациента (создание разметок)
